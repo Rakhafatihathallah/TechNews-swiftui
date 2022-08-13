@@ -35,50 +35,47 @@ struct ContentView: View {
     
     struct NewsFeedList : View {
         @EnvironmentObject var newsObj : NewsManager
+        let fontSize = FontSize()
         var body: some View {
             let jsonData = newsObj.newsModel
             let response = jsonData
             
             List(response?.articles ?? [], id:\.self){ news in
                 let url = URL(string: news.urlToImage ?? "")
-                NavigationLink {
+                NavigationLink(){
                     DetailView(nameImage: news.urlToImage ?? "", nameTitle: news.titles, nameAuthor: news.author ?? "", nameContent: news.content, nameURL: news.urls, namePublished: news.publishedAt)
                 } label: {
-                    VStack(alignment: .leading){
-                        HStack{
+                    VStack{
+                        AsyncImage(url: url) { Image in
+                            Image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
                             
-                            AsyncImage(url: url) { Image in
-                                Image
-                                    .resizable()
-                                    .frame(width: 110, height: 90)
-                                    .scaledToFill()
-                                   
-                                
-                                
-                            } placeholder: {
-                                ZStack{
-                                    Rectangle()
-                                        .frame(width: 110, height: 90)
-                                        .foregroundColor(.gray)
-                                    
-                                    ProgressView()
-                                        .progressViewStyle(CircularProgressViewStyle())
-                                    
-                                }
+                        } placeholder: {
+                            ZStack{
+                                RoundedRectangle(cornerRadius: 0)
+                                    .foregroundColor(.gray)
+                                    .aspectRatio(contentMode: .fit)
+                                ProgressView()
+                                    .progressViewStyle(CircularProgressViewStyle())
                             }
-                            VStack(alignment: .leading){
-
-                                Text(news.titles)
-                                    .fontWeight(.bold)
-                                    .font(.system(size: 12))
-                                
-
-                                Text(news.description)
-                                    .font(.footnote)
-                                    .lineLimit(2)
-                                    .multilineTextAlignment(.leading)
-                            }.padding()
                         }
+
+
+                        HStack{
+                            VStack(alignment: .leading, spacing: 10){
+                                Text(news.titles)
+                                    .font(fontSize.title)
+                                    .fontWeight(.bold)
+                                    .lineLimit(3)
+                                Text(news.description)
+                                    .font(fontSize.description)
+                                    .fontWeight(.medium)
+                                    .foregroundColor(.gray)
+                            }
+                            Spacer()
+                        }
+                        .padding()
                     }
                 }
             }.onAppear{
@@ -86,4 +83,12 @@ struct ContentView: View {
             }
         }
     }
+}
+
+
+
+struct FontSize {
+    let title       : Font = .title3
+    let description : Font = .footnote
+    let subDescription : Font = .caption
 }
