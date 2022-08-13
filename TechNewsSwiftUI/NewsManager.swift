@@ -10,7 +10,7 @@ import Foundation
 
 class NewsManager : ObservableObject {
     
-    @Published var newsURL : String = "https://newsapi.org/v2/everything?domains=wsj.com&apiKey=abfc00d5f4334b0292bada0c7478a094"
+    @Published var newsURL : String = "https://newsapi.org/v2/top-headlines?sources=techcrunch&apiKey=abfc00d5f4334b0292bada0c7478a094"
     
     @Published var newsModel : NewsModel?
     
